@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
   user.password = hash;
 
   try {
-    const newuser = await Auth.register(user);
+    const newuser = await Auth.add(user);
     res.status(201).json(newuser);
   } catch (err) {
     console.log(err);
@@ -20,9 +20,46 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.get('/users', async (req, res) => {
+router.get('/users', restricted, async (req, res) => {
   const users = await Auth.find();
   res.status(200).json(users);
 });
 
+router.post('/login', async (req, res) => {
+  let { username, password } = req.body;
+  try {
+    Auth.findbyUser({ username })
+      .first()
+      .then(user => {
+        if (user && bcrypt.compareSync(password, user.password)) {
+          res.status(200).json({ message: `Welcome ${user.username}` });
+        } else {
+          res.status(401).json({ message: 'Invalid Credentials' });
+        }
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
+
+function restricted(req, res, next) {
+  const { username, password } = req.headers;
+  if (username && password) {
+    Auth.findbyUser({ username })
+      .first()
+      .then(user => {
+        if (user && bcrypt.compareSync(password, user.password)) {
+          next();
+        } else {
+          res.status(401).json({ message: 'Invalid Credentials' });
+        }
+      })
+      .catch(error => {
+        res.status(500).json({ message: 'Unexpected Error' });
+      });
+  } else {
+    res.status(400).json({ message: 'Please provide username and password' });
+  }
+}
 module.exports = router;
