@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const session = require('express-session');
 const sessions = require('client-sessions');
+const cors = require('cors');
 
 const authRouter = require('./authentication/authRouter');
 
@@ -20,6 +21,7 @@ const sessionConfig = {
 
 server.use(helmet());
 server.use(logger);
+server.use(cors);
 server.use(express.json());
 server.use(
   sessions({
