@@ -6,9 +6,9 @@ const Header = props => {
     <div>
       <h1>Welcome to WebAuth-I React Page</h1>
       <div className="header-menu">
-        <NavLink>Login</NavLink>
-        <NavLink>Users</NavLink>
-        <NavLink>Register</NavLink>
+        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/users">Users</NavLink>
+        <NavLink to="/register">Register</NavLink>
       </div>
     </div>
   );

@@ -34,9 +34,13 @@ router.post('/login', async (req, res) => {
         if (user && bcrypt.compareSync(password, user.password)) {
           console.log(user);
           req.cookieV2.user = user;
-          res.status(200).json({ message: `Welcome ${user.username}` });
+          res
+            .status(200)
+            .json({ message: `Welcome ${user.username}`, loggedIn: true });
         } else {
-          res.status(401).json({ message: 'Invalid Credentials' });
+          res
+            .status(401)
+            .json({ message: 'Invalid Credentials', loggedIn: false });
         }
       });
   } catch (err) {

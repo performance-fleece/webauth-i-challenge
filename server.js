@@ -21,7 +21,6 @@ const sessionConfig = {
 
 server.use(helmet());
 server.use(logger);
-server.use(cors);
 server.use(express.json());
 server.use(
   sessions({
@@ -37,6 +36,11 @@ server.use(
   })
 );
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true
+};
+
 server.use(function(req, res, next) {
   if (req.cookieV2.seenyou) {
     res.setHeader('X-Seen-You', 'true');
@@ -48,7 +52,7 @@ server.use(function(req, res, next) {
   }
 });
 // server.use(session(sessionConfig));
-server.use('/api', authRouter);
+server.use('/api', cors(corsOptions), authRouter);
 
 function logger(req, res, next) {
   const time = new Date();
